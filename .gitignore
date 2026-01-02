@@ -1,0 +1,14 @@
+# Compiled executables
+output
+*.out
+*.exe
+
+# Object files
+*.o
+
+# Temporary files
+*.tmp
+*.log
+
+# Editor files
+*.swp
