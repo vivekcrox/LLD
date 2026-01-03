@@ -1,5 +1,6 @@
 #include<iostream>
 #include<mutex>
+#include <memory>
 using namespace std;
 
 // Problem 1: Singleton - Logger System
@@ -135,10 +136,94 @@ void testFactory() {
     cout << "\n\n";
 }
 
+// ===========================================================================
+
+// Problem 3: Strategy - Payment Processing
+/**
+ * Implement payment strategies: CreditCard, PayPal, Cryptocurrency
+ * Context should be able to switch payment method at runtime
+ */
+
+class PaymentStrategy {
+public: 
+    virtual ~PaymentStrategy() = default;
+    virtual void pay(double amount) = 0;
+};
+
+class CreditCardPayment : public PaymentStrategy {
+private: 
+    string cardNumber;
+public: 
+    CreditCardPayment(const string& card) : cardNumber(card) {}
+
+    void pay(double amount) override {
+        cout << "Paid $" << amount << " using Credit Card: " <<
+        cardNumber.substr(cardNumber.length() - 4) << "\n";
+    }
+};
+
+class PayPalPayment : public PaymentStrategy {
+private: 
+    string email;
+public:    
+    PayPalPayment(const string& email) : email(email) {}
+
+    void pay(double amount) override {
+        cout << "Paid $" << amount << " using PayPal: " << email << "\n";
+    }
+};
+
+class CryptoPayment : public PaymentStrategy {
+private: 
+    string walletAddress;
+public: 
+    CryptoPayment(const string& wallet) : walletAddress(wallet) {}
+
+    void pay(double amount) override {
+        cout << "Paid $" << amount << " using Crypto wallet: " << walletAddress.substr(0, 8) << "..." << "\n";
+    }
+};
+
+class PaymentContext {
+private: 
+    PaymentStrategy* strategy;
+public: 
+    PaymentContext() {
+        strategy = nullptr;
+    }
+
+    void setStrategy(PaymentStrategy* newStrategy) {
+        strategy = newStrategy;
+    }
+
+    void executePayment(double amount) {
+        if(strategy) {
+            strategy->pay(amount);
+        } else {
+            cout << "No Payment strategy set !" << "\n";
+        }
+    }
+};
+
+void testStrategy() {
+    cout << "Testing Strategy Pattern" << "\n";
+
+    PaymentContext context;
+
+    context.setStrategy(new CreditCardPayment("2322-1232-2231-0292"));
+    context.executePayment(100.2);
+
+    context.setStrategy(new CryptoPayment("0x29297562202672020220010"));
+    context.executePayment(2921.63);
+
+    cout << "\n\n";
+}
+
 int main() {
 
     testSingleton();
     testFactory();
+    testStrategy();
 
     return 0;
 }
